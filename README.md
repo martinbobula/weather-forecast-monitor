@@ -25,10 +25,11 @@ We check the weather to decide what to wear, whether to bring a rain jacket, and
 - Runs on a schedule via macOS `launchd` (or manually via a bash script)
 
 **Success criteria (how “good” is judged):**
-- Alerts are **rare enough to be trusted**, but fast enough to prevent surprises
-- Alerts trigger on **meaningful changes** (not repeated noise)
-- Pipeline runs are **repeatable and debuggable** (logs + monitoring table)
-- Data is layered and auditable: raw → modeled → decisions → notifications
+- Alerts are **infrequent enough to remain trusted**, but early enough to prevent surprises
+- Alerts trigger on **meaningful forecast changes**, not repeated identical predictions
+- Morning brief provides a concise, decision-ready overview of the next 12 hours
+- Pipeline runs are **repeatable, traceable, and debuggable**
+- Data transformations are transparent and auditable (SQL-first modeling)
 
 **Non-goals (intentional):**
 - No UI or mobile app
@@ -55,4 +56,82 @@ We check the weather to decide what to wear, whether to bring a rain jacket, and
 
 > See: `docs/02_architecture.md` for the component-level breakdown and `docs/03_data_model.md` for tables and lineage.
 
-> ![Architecture diagram](assets/architecture.png)
+![Architecture diagram](assets/architecture.png)
+
+---
+
+## Reliability & Data Quality
+
+Although this is a local project, it is structured with production-style thinking:
+
+### 1. Idempotent Raw Loading
+
+Each raw forecast snapshot:
+
+- Is stored as a timestamped JSON file
+- Is hashed (`sha256`) based on payload content
+- Is registered in `snapshot_registry`
+- Is only inserted into `raw_snapshots` once
+
+If the same raw file is processed again, it is safely skipped.
+
+This prevents duplication and ensures reproducibility.
+
+---
+
+### 2. Layered Data Modeling (Bronze → Silver → Gold)
+
+The pipeline follows a simplified warehouse pattern:
+
+- **Bronze**  
+  Raw JSON snapshots stored on disk and in `raw_snapshots`.
+
+- **Silver**  
+  `snapshots_hourly` — flattened, row-based hourly forecast data.
+
+- **Gold**  
+  Decision-support tables:
+  - `monitoring_snapshot_health`
+  - alert decision + gated tables
+  - `alert_log`
+  - `brief_log`
+
+Business logic (alerts, dayparts, monitoring) is expressed in SQL for transparency and auditability.
+
+---
+
+### 3. Monitoring & Health Checks
+
+Each run writes a monitoring row including:
+
+- Number of snapshots today
+- Missing forecast hours (06:00–19:00)
+- % of hourly forecast values that changed compared to previous snapshot
+
+This allows inspection of:
+- Forecast stability
+- Data freshness
+- Gaps in ingestion
+
+---
+
+### 4. Alert Noise Reduction
+
+Alerts are:
+
+- **Change-aware** (only when new information appears)
+- **Cooldown-gated** (2-hour suppression window)
+- Logged for traceability
+
+This reduces alert fatigue and improves trust in notifications.
+
+---
+
+### 5. Time Gating & Operational Control
+
+- Pipeline runs only between 06:00–19:59 local time
+- Morning brief sends once per day (after 07:00)
+- `--dry-run` and `--force` flags allow safe testing
+
+This ensures predictable behavior and safe iteration.
+
