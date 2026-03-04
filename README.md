@@ -135,3 +135,107 @@ This reduces alert fatigue and improves trust in notifications.
 
 This ensures predictable behavior and safe iteration.
 
+---
+
+## Alert Evaluation & Usefulness
+
+This project is not about predicting weather — it is about delivering **useful signals**.
+
+Alert quality can be evaluated using:
+
+### 1. Frequency
+- Are alerts rare enough to remain trusted?
+- If alerts trigger every hour, the threshold is too sensitive.
+
+### 2. Change Meaningfulness
+- Do alerts reflect new information (vs repeated identical forecast)?
+- Change-aware logic ensures alerts trigger only when the forecast meaningfully changes.
+
+### 3. Timeliness
+- Does the alert arrive early enough to adjust plans?
+- Example: rain alert within the next 6 hours is actionable.
+
+### 4. False Positives vs Missed Signals
+- Too many alerts → noise.
+- Too few alerts → missed events.
+- Thresholds (wind ≥ 30 km/h, +15 km/h spike, etc.) can be tuned.
+
+Future improvement: introduce measurable evaluation metrics such as:
+- Alerts per week
+- % of alerts followed by actual observed rain/wind
+- Average lead time before event
+
+---
+
+## Roadmap & Future Improvements
+
+This project is intentionally scoped as a single-location local pipeline. Future iterations may include:
+
+### 1. Temperature Delta Detection (Planned)
+Detect and surface significant temperature changes compared to:
+- Previous day
+- Previous forecast snapshot
+
+Example:
+“Temperature expected to drop by 6°C compared to yesterday afternoon.”
+
+This would improve decision awareness for clothing and outdoor planning.
+
+---
+
+### 2. Configuration Centralization
+Move hard-coded values (location, thresholds, time windows) into:
+- A structured config file (YAML/JSON)
+- Parameterized SQL models
+
+---
+
+### 3. Packaging & Dependency Management
+- Convert project into a proper Python package
+- Add `requirements.txt` or `pyproject.toml`
+- Remove `sys.path` adjustments
+
+---
+
+### 4. Multi-Location Support
+Generalize pipeline to support multiple cities via parameterized modeling.
+
+---
+
+### 5. Production Deployment
+Replace macOS `launchd` with:
+- Cloud scheduler (e.g., GitHub Actions, cron job, or lightweight cloud VM)
+- Proper secrets management
+
+---
+
+### 6. Automated Testing
+- Unit tests for alert logic
+- Integration test using synthetic snapshot data
+- Validation tests for morning brief formatting
+
+---
+
+## Repository Structure
+
+scripts/  
+- `run_weather_pipeline.sh` — Main orchestrator script  
+
+src/  
+- ingest/ — API ingestion & raw loading  
+- notify/ — Alerts, morning brief, Telegram integration  
+
+sql/  
+- models/ — Core, monitoring, alerts, brief  
+- eda/ — Debugging & exploratory SQL  
+
+data/  
+- raw/ — Raw JSON snapshots  
+- duckdb/weather.duckdb — Local database file  
+- exports/logs/ — Pipeline logs  
+
+docs/  
+- Architecture, data model, monitoring, evaluation deep dives  
+
+assets/  
+- Architecture diagram and sample outputs  
