@@ -4,6 +4,8 @@ A local, SQL-first weather pipeline that turns a public forecast API into **deci
 
 This repository is intentionally **simple but trustworthy**: it focuses on clear data layers, transparent business rules in SQL, and reliability patterns (idempotency, monitoring, cooldown gating) rather than UI, ML, or scale. It’s a portfolio project built to practice real-world pipeline thinking and communicate it clearly to non-engineering stakeholders.
 
+This project is actively evolving. The current version demonstrates the core architecture and decision logic of the pipeline. Additional improvements (evaluation metrics, configuration refactoring, and new alert signals) are listed in the Roadmap section.
+
 ---
 
 ## Executive summary
@@ -238,4 +240,20 @@ docs/
 - Architecture, data model, monitoring, evaluation deep dives  
 
 assets/  
-- Architecture diagram and sample outputs  
+- Architecture diagram and sample outputs
+
+
+## Quickstart (Local)
+
+Requirements:
+- Python 3.10+
+- DuckDB
+- Telegram Bot token (optional, for notifications)
+
+Run a full pipeline cycle:
+
+bash scripts/run_weather_pipeline.sh
+
+Run morning brief in dry mode:
+
+python src/notify/print_morning_brief.py --dry-run
