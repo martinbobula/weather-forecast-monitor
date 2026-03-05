@@ -1,8 +1,10 @@
 # Weather Forecast Monitor (Prague)
 
-A local, SQL-first weather pipeline that turns a public forecast API into **decision-support alerts** and a daily **morning brief** — designed for a real use case (me / my girlfriend / my friends in Prague) where the goal is to **avoid being surprised** by meaningful weather changes.
+A local, SQL-first weather pipeline that turns a public forecast API into **decision-support alerts** and a daily **morning brief**.
 
-This repository is intentionally **simple but trustworthy**: it focuses on clear data layers, transparent business rules in SQL, and reliability patterns (idempotency, monitoring, cooldown gating) rather than UI, ML, or scale. It’s a portfolio project built to practice real-world pipeline thinking and communicate it clearly to non-engineering stakeholders.
+The project is built around a real use case (me / my girlfriend / friends in Prague): the goal is to **avoid being surprised by meaningful weather changes**, not to constantly monitor forecasts. Instead of repeatedly checking weather apps, the pipeline detects **new or significant forecast changes** (rain risk, wind spikes) and delivers concise notifications.
+
+This repository is intentionally **simple but trustworthy**: it focuses on clear data layers, transparent business rules in SQL, and reliability patterns (idempotency, monitoring, cooldown gating) rather than UI, ML, or scale.
 
 This project is actively evolving. The current version demonstrates the core architecture and decision logic of the pipeline. Additional improvements (evaluation metrics, configuration refactoring, and new alert signals) are listed in the Roadmap section.
 
@@ -11,7 +13,7 @@ This project is actively evolving. The current version demonstrates the core arc
 ## Executive summary
 
 **Problem (user + decision):**
-We check the weather to decide what to wear, whether to bring a rain jacket, and whether wind/rain will disrupt plans. The pain is not “lack of information” — it’s **noise, last-minute surprises and not checking weather by myself whenever it is truly needed**. This project converts forecasts into **actionable signals**:
+We check the weather to decide what to wear, whether to bring a rain jacket, and whether wind/rain will disrupt plans. The pain is not “lack of information” — it’s **noise, last-minute surprises, and forgetting to check the forecast when it actually matters**. This project converts forecasts into **actionable signals**:
 - “Rain became likely within the next 6 hours (new information).”
 - “Wind risk spiked compared to the previous forecast.”
 - “Morning brief: what the next 12 hours look like, including dayparts (morning/noon/afternoon/evening).”
@@ -38,6 +40,16 @@ We check the weather to decide what to wear, whether to bring a rain jacket, and
 - No ML forecasting (uses Open-Meteo as the forecast provider)
 - No multi-city scale (single-location template first)
 - No cloud deployment in this repo (see roadmap for productionization path)
+
+## Why this project exists
+
+Many real-world data problems involve turning **external APIs into reliable decision-support signals**.
+
+This repository demonstrates a small but realistic version of that pattern:
+
+API → Raw archive → Modeled tables → Monitoring → Alerts → Notifications
+
+The goal is not weather prediction itself, but building a **transparent and reliable data pipeline** that converts external data into actionable information.
 
 ---
 
