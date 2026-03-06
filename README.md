@@ -70,8 +70,6 @@ The goal is not weather prediction itself, but building a **transparent and reli
 
 > See: `docs/02_architecture.md` for the component-level breakdown and `docs/03_data_model.md` for tables and lineage.
 
-![Architecture diagram](assets/architecture.png)
-
 ---
 
 ## Reliability & Data Quality
