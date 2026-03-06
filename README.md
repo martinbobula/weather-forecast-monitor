@@ -17,7 +17,7 @@ We check the weather to decide what to wear, whether to bring a rain jacket, and
 - “Rain became likely within the next 6 hours (new information).”
 - “Wind risk spiked compared to the previous forecast.”
 - “Morning brief: what the next 12 hours look like, including dayparts (morning/noon/afternoon/evening).”
-- 
+  
 **Solution (what the pipeline does):**
 - Fetches hourly forecasts from Open-Meteo
 - Stores raw JSON snapshots on disk (raw archive)
