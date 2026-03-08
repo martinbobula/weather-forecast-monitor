@@ -181,52 +181,81 @@ Future improvement: introduce measurable evaluation metrics such as:
 
 ## Roadmap & Future Improvements
 
-This project is intentionally scoped as a single-location local pipeline. Future iterations may include:
+This project is intentionally scoped as a local, single-location pipeline. The next iterations focus on improving signal quality, explainability, and practical AI-assisted analysis.
 
-### 1. Temperature Delta Detection (Planned)
-Detect and surface significant temperature changes compared to:
-- Previous day
-- Previous forecast snapshot
+### 1. AI Explainability Assistant (Next Major Iteration)
+Add an LLM-based assistant that helps interpret the pipeline outputs and explain forecast changes in human terms.
+
+Example questions:
+- “Why did the wind alert trigger today?”
+- “Why were there so many alerts this morning?”
+- “Why did it feel colder outside than expected?”
+- “Are my current alert thresholds too sensitive?”
+
+The assistant would analyze forecast snapshots, monitoring tables, alert logs, and morning brief outputs to generate concise explanations and support threshold tuning.
+
+---
+
+### 2. Forecast Change Detection
+Detect and surface significant forecast changes compared to:
+- previous forecast snapshots
+- previous day conditions
+- recent historical patterns
 
 Example:
-“Temperature expected to drop by 6°C compared to yesterday afternoon.”
+> “Temperature is expected to drop by 6°C compared to yesterday afternoon.”
 
 This would improve decision awareness for clothing and outdoor planning.
 
 ---
 
-### 2. Configuration Centralization
-Move hard-coded values (location, thresholds, time windows) into:
-- A structured config file (YAML/JSON)
-- Parameterized SQL models
+### 3. Alert Evaluation Metrics
+Introduce evaluation metrics to measure alert usefulness over time.
+
+Examples:
+- alerts per day / week
+- lead time before event
+- false positives vs missed signals
+- forecast volatility
+
+This would make it easier to tune the system based on observed alert behavior rather than intuition alone.
 
 ---
 
-### 3. Packaging & Dependency Management
-- Convert project into a proper Python package
-- Add `requirements.txt` or `pyproject.toml`
-- Remove `sys.path` adjustments
+### 4. Data-Informed Threshold Tuning
+Move from fixed thresholds toward more data-informed signal detection.
+
+Examples:
+- thresholds based on recent historical distributions
+- percentile-based alerts
+- season-aware weighting of wind / rain / temperature changes
+
+This would improve the consistency of what counts as a “significant” weather change.
 
 ---
 
-### 4. Multi-Location Support
-Generalize pipeline to support multiple cities via parameterized modeling.
+### 5. Configuration & Packaging Improvements
+Improve maintainability by:
+- centralizing configuration (location, thresholds, time windows)
+- converting the repository into a proper Python package
+- removing `sys.path` adjustments
+- adding dependency management (`requirements.txt` or `pyproject.toml`)
 
 ---
 
-### 5. Production Deployment
-Replace macOS `launchd` with:
-- Cloud scheduler (e.g., GitHub Actions, cron job, or lightweight cloud VM)
-- Proper secrets management
+### 6. Automated Logic Testing
+Add validation for key business rules, including:
+- unit tests for alert decision logic
+- synthetic forecast datasets for integration testing
+- validation tests for morning brief formatting
 
 ---
 
-### 6. Automated Testing
-- Unit tests for alert logic
-- Integration test using synthetic snapshot data
-- Validation tests for morning brief formatting
-
----
+### 7. Optional Production Deployment
+Replace the local macOS scheduler with a lightweight production setup:
+- cloud scheduler (GitHub Actions, cron job, or lightweight VM)
+- proper secrets management
+- remote logging / monitoring
 
 ## Repository Structure
 
